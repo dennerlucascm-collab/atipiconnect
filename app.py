@@ -2,17 +2,20 @@ import streamlit as st
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import time
+import json
 
-# 1. Configuração de acesso
+# 1. Configuração de acesso (Lendo do Cofre Secreto da Nuvem)
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-caminho_credenciais = "C:\\Users\\H2L\\Desktop\\ATIPICONNECT_APP\\credenciais.json" 
-creds = ServiceAccountCredentials.from_json_keyfile_name(caminho_credenciais, scope)
+
+# Pega o texto do segredo e transforma no formato que o Google entende
+credenciais_dict = json.loads(st.secrets["google_credentials"])
+creds = ServiceAccountCredentials.from_json_keyfile_dict(credenciais_dict, scope)
 client = gspread.authorize(creds)
 
 planilha_id = "1XOBHOT0EDg0T09TBsD3Ie7vxkTqo4-f9gMfdhSVdqP0"
 aba_familias = client.open_by_key(planilha_id).worksheet("Famílias")
 
-# 2. UI/UX DESIGN (Com correção da cor das perguntas)
+# 2. UI/UX DESIGN
 st.set_page_config(page_title="ATIPICONNECT", page_icon="🧩", layout="centered")
 
 st.markdown("""
@@ -21,10 +24,7 @@ st.markdown("""
     @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
     [data-testid="stForm"] { background-color: rgba(255, 255, 255, 0.95) !important; border-radius: 25px !important; padding: 30px !important; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important; border: 2px solid #FFFFFF !important; }
     .stMarkdown p, .stMarkdown span { color: #333333 !important; font-weight: 700 !important; }
-    
-    /* CORREÇÃO DOS LABELS: Força as perguntas a ficarem escuras e legíveis */
     label, label p, label span, [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] { color: #333333 !important; font-weight: 800 !important; font-size: 1.05rem !important; }
-    
     div[data-baseweb="input"] > div, div[data-baseweb="select"] > div, textarea { background-color: #FFFFFF !important; border: 2px solid #87CEFA !important; border-radius: 12px !important; }
     div[data-baseweb="input"] input, div[data-baseweb="select"] div, textarea { color: #1A1A1A !important; font-weight: 600 !important; }
     div[data-baseweb="input"] > div:focus-within, textarea:focus { border-color: #FF8C00 !important; }
