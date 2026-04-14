@@ -19,169 +19,199 @@ try:
 except Exception as e:
     st.error(f"Erro na conexão com a planilha: {e}")
 
-# 2. UI/UX DESIGN (LAYOUT MOBILE APP BLINDADO)
+# 2. UI/UX DESIGN (MOBILE APP REAL E BLINDADO CONTRA DARK MODE)
 st.set_page_config(page_title="ATIPICONNECT", page_icon="🧩", layout="centered")
 
-# CSS para Simulação Mobile e Navegação Inferior
 st.markdown("""
     <style>
-    /* Carregar fonte moderna */
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+    /* 1. Fundo Azul Claro Fixo */
+    [data-testid="stAppViewContainer"] { background-color: #EAF4FB !important; }
     
-    * { font-family: 'Poppins', sans-serif !important; }
-
-    /* Fundo Azul Clarinho Global (Fundo do Telefone) */
-    [data-testid="stAppViewContainer"] { 
-        background-color: #EAF4FB !important; 
-        padding-bottom: 80px !important; /* Espaço para a nav-bar fixa */
+    /* Dá espaço no final da página para a barra não cobrir o conteúdo */
+    .block-container { padding-bottom: 100px !important; }
+    
+    /* 2. FORÇA BRUTA NAS CORES DE TEXTO (Contra Dark Mode) */
+    /* Força texto preto em tudo que é parágrafo, label e texto comum */
+    p, span, label, div, [data-testid="stWidgetLabel"] p, .stMarkdown p { 
+        color: #1A1A1A !important; 
     }
     
-    /* RESET DE TEXTOS: Blindando contra Modo Escuro (Sempre Escuros) */
-    h1 { color: #FF8C00 !important; font-weight: 800 !important; font-size: 2.2rem !important; margin-bottom: 0px !important;}
-    h3 { color: #4682B4 !important; font-weight: 600 !important; font-size: 1rem !important; margin-top: 0px !important;}
-    label p, label span, .stMarkdown p, .stMarkdown li, [data-testid="stWidgetLabel"] p {
-        color: #2D3748 !important; /* Texto Escuro/Visível */
-        font-weight: 700 !important; 
-        font-size: 0.95rem !important; 
-    }
+    /* Força Títulos a serem Azul Forte */
+    h3, h4, h5, h6 { color: #1E3A8A !important; font-weight: 800 !important; }
     
-    /* Inputs Minimalistas */
+    /* Força o Título Principal a ser Laranja */
+    h1 { color: #FF8C00 !important; font-weight: 900 !important; text-align: center; font-size: 2.5rem !important; margin-bottom: 0px !important;}
+    
+    /* 3. Estilo dos Inputs (Caixas de texto visíveis) */
     div[data-baseweb="input"] > div, div[data-baseweb="select"] > div, textarea { 
         background-color: #FFFFFF !important;
-        border: 1px solid #D0E3F0 !important;
+        border: 2px solid #A0AEC0 !important; /* Borda cinza visível */
         border-radius: 12px !important; 
-        box-shadow: none !important;
-        transition: 0.3s;
+        color: #1A1A1A !important; /* Texto interno sempre preto */
     }
     div[data-baseweb="input"] input, div[data-baseweb="select"] div, textarea { 
-        color: #1A1A1A !important; 
-        font-weight: 600 !important; 
+        color: #1A1A1A !important; font-weight: 600 !important; 
     }
     div[data-baseweb="input"] > div:focus-within, textarea:focus { border-color: #FF8C00 !important; }
     
-    /* Card de Formulário Branco */
+    /* Card Branco do Formulário */
     [data-testid="stForm"] { 
         background-color: #FFFFFF !important;
         border-radius: 20px !important;
-        padding: 25px !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03) !important;
+        padding: 20px !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
         border: none !important;
-        margin-top: 10px !important;
     }
     
-    /* Botão Principal Mobile */
+    /* Botão Principal */
     [data-testid="stFormSubmitButton"] > button { 
         background: linear-gradient(135deg, #FF8C00, #FF6B00) !important;
-        color: #FFFFFF !important;
         border-radius: 20px !important;
         border: none !important;
-        font-weight: 800 !important;
-        font-size: 1rem !important;
-        padding: 10px 20px !important;
+        padding: 12px 20px !important;
         width: 100% !important;
-        margin-top: 20px !important;
-        box-shadow: 0 4px 12px rgba(255, 140, 0, 0.2) !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.5px !important;
+        box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3) !important;
     }
-    [data-testid="stFormSubmitButton"] > button:hover { transform: translateY(-2px); }
+    /* Protege o texto do botão para continuar branco */
+    [data-testid="stFormSubmitButton"] > button p { 
+        color: #FFFFFF !important; 
+        font-weight: 800 !important; 
+        font-size: 1.1rem !important; 
+        text-transform: uppercase !important; 
+    }
 
-    /* Barra de Navegação Inferior FIXA (Simulação Mobile) */
-    .mobile-nav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 70px;
-        background: white;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
-        z-index: 1000;
-        border-radius: 20px 20px 0 0;
+    /* ========================================================
+       A MÁGICA: TRANSFORMAR ABAS EM BARRA INFERIOR CLICÁVEL
+       ======================================================== */
+    /* Move o container das abas para o rodapé */
+    div[data-testid="stTabs"] > div:first-child {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        background-color: #FFFFFF !important;
+        z-index: 99999 !important;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.1) !important;
+        padding: 10px 0px 15px 0px !important;
+        display: flex !important;
+        justify-content: space-around !important;
+        border-radius: 25px 25px 0 0 !important;
     }
-    .nav-item {
-        text-align: center;
-        color: #718096;
-        cursor: pointer;
+    /* Esconde as linhas cinzas chatas do Streamlit */
+    div[data-baseweb="tab-border"] { display: none !important; }
+    div[data-baseweb="tab-highlight"] { display: none !important; }
+    
+    /* Estilo dos botões da aba (Ícones) */
+    button[data-baseweb="tab"] {
+        flex: 1 !important;
+        justify-content: center !important;
+        background: transparent !important;
+        border: none !important;
     }
-    .nav-item.active {
-        color: #FF8C00;
-        font-weight: 800;
+    button[data-baseweb="tab"] p {
+        color: #A0AEC0 !important; /* Cor inativa */
+        font-weight: 700 !important;
+        font-size: 0.9rem !important;
     }
-    .nav-icon {
-        font-size: 1.5rem;
-    }
-    .nav-label {
-        font-size: 0.75rem;
+    /* Cor da Aba Ativa na Barra Inferior */
+    button[data-baseweb="tab"][aria-selected="true"] p {
+        color: #FF8C00 !important; 
     }
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Cabeçalho Central
-st.markdown("<h1 style='text-align: center;'>🧩 ATIPICONNECT</h1>", unsafe_allow_html=True)
+# 3. Cabeçalho 
+st.markdown("<h1>🧩 ATIPICONNECT</h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center;'>Acolhimento & Desenvolvimento</h3>", unsafe_allow_html=True)
 st.write("")
 
-# 4. Conteúdo Principal (Simulando uma única tela mobile: Cadastro)
-st.markdown("#### 📋 Cadastro da Família", unsafe_allow_html=True)
+# 4. As Abas Nativas (Agora fixadas no rodapé pelo CSS)
+tab1, tab2, tab3, tab4 = st.tabs(["🏠 Início", "📋 Cadastro", "👨‍⚕️ Médicos", "🧸 Histórias"])
 
-with st.form("cadastro_familia", clear_on_submit=True):
-    st.markdown("#### 👤 Responsável", unsafe_allow_html=True)
-    nome_resp = st.text_input("Nome Completo", placeholder="Ex: Maria Silva")
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        email_resp = st.text_input("💌 Seu melhor E-mail")
-    with col2:
-        telefone = st.text_input("📱 WhatsApp")
-    
-    cidade = st.text_input("📍 Onde vocês moram? (Cidade / Estado)", placeholder="Ex: Campo Grande, MS")
-    
-    st.write("---")
-    st.markdown("#### 🧸 Perfil da Criança", unsafe_allow_html=True)
-    nome_crianca = st.text_input("Nome da Criança", placeholder="Qual o nome da fera?")
-    diagnostico = st.text_area("🧠 Conta um pouquinho sobre o diagnóstico", help="Pode ser breve! Estamos aqui para entender e ajudar.")
-    
-    necessidade = st.selectbox("Qual acompanhamento você busca hoje?", ["Neuropediatria", "Psiquiatria Infantil", "Fonoaudiologia", "Fisioterapia", "Terapia Ocupacional", "Psicologia"])
-    
-    st.write("")
-    submit_button = st.form_submit_button("🚀 CRIAR PERFIL AGORA")
+with tab1:
+    st.markdown("""
+        <div style="background-color: #FFFFFF; border-radius: 20px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px; border-left: 5px solid #FF8C00;">
+            <img src="https://img.freepik.com/premium-photo/confident-middle-aged-business-woman-attorney-45-years-old-lady-entrepreneur-mature-female-professional-executive-manager-leader-standing-modern-company-office-looking-camera-portrait_1254992-255711.jpg" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid #1E3A8A; flex-shrink: 0;">
+            <div>
+                <h4 style="margin: 0 0 5px 0;">Olá, sou a Ana Paula! 👩🏻‍💼</h4>
+                <p style="margin: 0; font-size: 0.9rem; line-height: 1.4;">Seja bem-vinda ao nosso app. Selecione "Cadastro" na barra inferior para preencher o perfil da criança.</p>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
 
-# 5. Lógica de salvar
+with tab2:
+    st.markdown("#### 📋 Formulário da Família", unsafe_allow_html=True)
+    with st.form("cadastro_familia", clear_on_submit=True):
+        st.markdown("<p style='font-size: 1.1rem; font-weight: 800; color: #1E3A8A !important;'>👤 Responsável</p>", unsafe_allow_html=True)
+        nome_resp = st.text_input("Nome Completo", placeholder="Ex: Maria Silva")
+        email_resp = st.text_input("E-mail")
+        telefone = st.text_input("WhatsApp")
+        cidade = st.text_input("Cidade / Estado", placeholder="Ex: Campo Grande, MS")
+        
+        st.write("---")
+        st.markdown("<p style='font-size: 1.1rem; font-weight: 800; color: #1E3A8A !important;'>🧸 Perfil da Criança</p>", unsafe_allow_html=True)
+        nome_crianca = st.text_input("Nome da Criança")
+        diagnostico = st.text_area("Breve relato sobre o diagnóstico")
+        necessidade = st.selectbox("Especialidade principal procurada", ["Neuropediatria", "Psiquiatria Infantil", "Fonoaudiologia", "Fisioterapia", "Terapia Ocupacional", "Psicologia"])
+        
+        submit_button = st.form_submit_button("CRIAR PERFIL AGORA")
+
+with tab3:
+    st.markdown("#### Corpo Clínico", unsafe_allow_html=True)
+    medicos = [
+        {"nome": "Dr. Carlos Mendes", "esp": "Neuropediatra", "crm": "CRM 45892", "img": "https://images.pexels.com/photos/5327656/pexels-photo-5327656.jpeg?auto=compress&cs=tinysrgb&w=200"},
+        {"nome": "Dra. Juliana Castro", "esp": "Psiquiatra Infantil", "crm": "CRM 67123", "img": "https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg?auto=compress&cs=tinysrgb&w=200"},
+        {"nome": "Dra. Renata Alves", "esp": "Fonoaudióloga", "crm": "CRFa 1245", "img": "https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg?auto=compress&cs=tinysrgb&w=200"}
+    ]
+    for m in medicos:
+        st.markdown(f"""
+            <div style="background-color: #FFFFFF; border-radius: 15px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border: 1px solid #A0AEC0;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <img src="{m['img']}" style="width: 55px; height: 55px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+                    <div>
+                        <div style="font-weight: 800; font-size: 1.05rem;">{m['nome']}</div>
+                        <div style="color: #FF8C00 !important; font-weight: 700; font-size: 0.85rem;">{m['esp']}</div>
+                        <div style="color: #A0AEC0 !important; font-weight: 600; font-size: 0.75rem;">{m['crm']}</div>
+                    </div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+
+with tab4:
+    st.markdown("#### Histórias de Superação", unsafe_allow_html=True)
+    historias = [
+        {
+            "nome": "Leo, 5 anos", "diag": "Autismo (TEA)", 
+            "texto": "Após 6 meses de acompanhamento com a equipe multidisciplinar, o Leo começou a pronunciar as primeiras palavras e interagir com os coleguinhas na escola. Uma vitória de toda a família!", 
+            "img": "https://arttherapyresources.com.au/wp-content/uploads/autism-children-art-therapy-1.jpg"
+        },
+        {
+            "nome": "Sofia, 7 anos", "diag": "TDAH", 
+            "texto": "A rotina estruturada recomendada pela neuropediatra transformou a vida da Sofia. Hoje ela consegue focar nas atividades e está muito mais feliz e confiante nas aulas.", 
+            "img": "https://media.istockphoto.com/id/2160439676/photo/happy-multiethnic-group-of-children-hugging-together-at-park.jpg?s=612x612&w=0&k=20&c=1lqhI9FvBhrHWTeycmeKB_Z36-OQJRcucLodsnKajR4="
+        }
+    ]
+    for h in historias:
+        st.markdown(f"""
+            <div style="background-color: #FFFFFF; border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 15px; border: 1px solid #A0AEC0;">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                    <img src="{h['img']}" style="width: 55px; height: 55px; border-radius: 50%; object-fit: cover;">
+                    <div>
+                        <div style="font-weight: 800; font-size: 1.1rem; color: #1E3A8A !important;">{h['nome']} 🧸</div>
+                        <div style="background: #EAF4FB; color: #1E3A8A !important; font-size: 0.75rem; padding: 4px 10px; border-radius: 8px; display: inline-block; font-weight: 700;">{h['diag']}</div>
+                    </div>
+                </div>
+                <p style="font-size: 0.95rem; line-height: 1.5; margin: 0; font-style: italic;">"{h['texto']}"</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+# Lógica de salvar
 if 'submit_button' in locals() and submit_button:
     if nome_resp and nome_crianca:
         with st.spinner("Salvando no sistema..."):
             nova_linha = [nome_resp, email_resp, telefone, cidade, nome_crianca, diagnostico, "", necessidade, ""]
             aba_familias.append_row(nova_linha)
         st.balloons()
-        st.success("✅ Perfil criado com sucesso na rede de apoio!")
+        st.success("✅ Tudo pronto! O perfil foi criado com sucesso.")
     else:
-        st.error("🙈 Ops! Parece que você esqueceu de colocar o seu nome e o da criança.")
-
-# 6. Barra de Navegação Inferior FIXA (Totalmente em HTML/CSS)
-st.markdown("""
-    <div class="mobile-nav">
-        <div class="nav-item">
-            <div class="nav-icon">🏠</div>
-            <div class="nav-label">Início</div>
-        </div>
-        <div class="nav-item active">
-            <div class="nav-icon">📋</div>
-            <div class="nav-label">Cadastro</div>
-        </div>
-        <div class="nav-item">
-            <div class="nav-icon">🔍</div>
-            <div class="nav-label">Buscar</div>
-        </div>
-        <div class="nav-item">
-            <div class="nav-icon">❤️</div>
-            <div class="nav-label">Doações</div>
-        </div>
-        <div class="nav-item">
-            <div class="nav-icon">💬</div>
-            <div class="nav-label">Chat</div>
-        </div>
-    </div>
-""", unsafe_allow_html=True)
+        st.error("⚠️ Por favor, preencha pelo menos o seu nome e o da criança.")
