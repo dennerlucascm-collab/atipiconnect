@@ -19,7 +19,7 @@ try:
 except Exception as e:
     st.error(f"Erro na conexão com a planilha: {e}")
 
-# 2. UI/UX DESIGN (ESTÁVEL E BLINDADO CONTRA DARK MODE)
+# 2. UI/UX DESIGN: MOBILE APP (BARRA INFERIOR SEGURA E ALTO CONTRASTE)
 st.set_page_config(page_title="ATIPICONNECT", page_icon="🧩", layout="centered")
 
 st.markdown("""
@@ -27,18 +27,17 @@ st.markdown("""
     /* 1. Fundo Azul Claro Fixo */
     [data-testid="stAppViewContainer"] { background-color: #EAF4FB !important; }
     
-    /* 2. FORÇA BRUTA NAS CORES DE TEXTO (Impedindo o texto branco fantasma) */
+    /* Protege o conteúdo de ser engolido pela barra inferior */
+    .block-container { padding-bottom: 120px !important; }
+    
+    /* 2. FORÇA BRUTA NAS CORES (Contra Modo Escuro e Textos Fantasmas) */
     p, span, label, div, [data-testid="stWidgetLabel"] p, .stMarkdown p { 
         color: #1A1A1A !important; 
     }
-    
-    /* Títulos em Azul Forte */
     h3, h4, h5, h6 { color: #1E3A8A !important; font-weight: 800 !important; }
+    h1 { color: #FF8C00 !important; font-weight: 900 !important; text-align: center; font-size: 2.2rem !important; margin-bottom: 0px !important;}
     
-    /* Título Principal em Laranja */
-    h1 { color: #FF8C00 !important; font-weight: 900 !important; text-align: center; font-size: 2.5rem !important; margin-bottom: 0px !important;}
-    
-    /* 3. Estilo dos Inputs (Caixas de texto super visíveis) */
+    /* 3. Inputs (Caixas de texto super legíveis) */
     div[data-baseweb="input"] > div, div[data-baseweb="select"] > div, textarea { 
         background-color: #FFFFFF !important;
         border: 2px solid #A0AEC0 !important; 
@@ -53,9 +52,9 @@ st.markdown("""
     [data-testid="stForm"] { 
         background-color: #FFFFFF !important;
         border-radius: 20px !important;
-        padding: 25px !important;
+        padding: 20px !important;
+        border: 2px solid #CBD5E1 !important;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
-        border: none !important;
     }
     
     /* Botão Principal */
@@ -74,19 +73,53 @@ st.markdown("""
         text-transform: uppercase !important; 
     }
 
-    /* 4. ESTILO DA NAVEGAÇÃO NO TOPO (Menu App Moderno) */
-    [data-testid="stTabs"] { padding-top: 15px; }
-    button[data-baseweb="tab"] p { 
+    /* ========================================================
+       MÁGICA SEGURA: BARRA INFERIOR (Mobile Navigation)
+       ======================================================== */
+    /* Foca estritamente na lista de botões das abas */
+    div[role="tablist"] {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        background-color: #FFFFFF !important;
+        z-index: 999999 !important;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.15) !important;
+        padding: 10px 0px 25px 0px !important; /* Espaço extra para a base do celular */
+        display: flex !important;
+        justify-content: space-evenly !important;
+        border-radius: 25px 25px 0 0 !important;
+        flex-wrap: nowrap !important;
+    }
+    
+    /* Remove as linhas e fundos chatos nativos do Streamlit */
+    div[data-baseweb="tab-border"] { display: none !important; }
+    div[data-baseweb="tab-highlight"] { display: none !important; }
+    
+    /* Estilo dos Botões Nativos na Barra Inferior */
+    button[role="tab"] {
+        flex: 1 !important;
+        justify-content: center !important;
+        background: transparent !important;
+        border: none !important;
+        min-width: auto !important;
+    }
+    
+    /* Texto Inativo (Cinza) */
+    button[role="tab"] p {
+        color: #64748B !important; 
         font-weight: 700 !important; 
-        font-size: 1rem !important; 
-        color: #64748B !important; /* Cinza para itens inativos */
+        font-size: 0.8rem !important; /* Tamanho mobile */
+        margin: 0 !important;
+        text-align: center !important;
     }
-    button[data-baseweb="tab"][aria-selected="true"] p { 
-        color: #FF8C00 !important; /* Laranja vibrante para o item ativo */
-    }
-    button[data-baseweb="tab"][aria-selected="true"] { 
-        border-bottom-color: #FF8C00 !important; 
-        border-bottom-width: 3px !important;
+    
+    /* Texto Ativo (Laranja e Destacado) */
+    button[role="tab"][aria-selected="true"] p {
+        color: #FF8C00 !important; 
+        font-weight: 900 !important;
+        font-size: 0.85rem !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -95,7 +128,7 @@ st.markdown("""
 st.markdown("<h1>🧩 ATIPICONNECT</h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center; margin-top: 0;'>Acolhimento & Desenvolvimento</h3>", unsafe_allow_html=True)
 
-# 4. As Abas Nativas (No topo, estruturalmente corretas)
+# 4. As Abas Nativas (Agora no rodapé pelo CSS, 100% clicáveis)
 tab1, tab2, tab3, tab4 = st.tabs(["🏠 Início", "📋 Cadastro", "👨‍⚕️ Médicos", "🧸 Histórias"])
 
 with tab1:
@@ -104,7 +137,7 @@ with tab1:
             <img src="https://img.freepik.com/premium-photo/confident-middle-aged-business-woman-attorney-45-years-old-lady-entrepreneur-mature-female-professional-executive-manager-leader-standing-modern-company-office-looking-camera-portrait_1254992-255711.jpg" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid #1E3A8A; flex-shrink: 0;">
             <div>
                 <h4 style="margin: 0 0 5px 0;">Olá, sou a Ana Paula! 👩🏻‍💼</h4>
-                <p style="margin: 0; font-size: 0.95rem; line-height: 1.4;">Seja bem-vinda ao nosso app. Selecione "Cadastro" no menu acima para preencher o perfil da criança.</p>
+                <p style="margin: 0; font-size: 0.95rem; line-height: 1.4;">Seja bem-vinda ao nosso app. Selecione "Cadastro" na barra inferior para preencher o perfil.</p>
             </div>
         </div>
     """, unsafe_allow_html=True)
