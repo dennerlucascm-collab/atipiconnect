@@ -19,7 +19,7 @@ try:
 except Exception as e:
     st.error(f"Erro na conexão com a planilha: {e}")
 
-# 2. UI/UX DESIGN (MOBILE APP REAL E BLINDADO CONTRA DARK MODE)
+# 2. UI/UX DESIGN (ESTÁVEL E BLINDADO CONTRA DARK MODE)
 st.set_page_config(page_title="ATIPICONNECT", page_icon="🧩", layout="centered")
 
 st.markdown("""
@@ -27,30 +27,25 @@ st.markdown("""
     /* 1. Fundo Azul Claro Fixo */
     [data-testid="stAppViewContainer"] { background-color: #EAF4FB !important; }
     
-    /* Dá espaço no final da página para a barra não cobrir o conteúdo */
-    .block-container { padding-bottom: 100px !important; }
-    
-    /* 2. FORÇA BRUTA NAS CORES DE TEXTO (Contra Dark Mode) */
-    /* Força texto preto em tudo que é parágrafo, label e texto comum */
+    /* 2. FORÇA BRUTA NAS CORES DE TEXTO (Impedindo o texto branco fantasma) */
     p, span, label, div, [data-testid="stWidgetLabel"] p, .stMarkdown p { 
         color: #1A1A1A !important; 
     }
     
-    /* Força Títulos a serem Azul Forte */
+    /* Títulos em Azul Forte */
     h3, h4, h5, h6 { color: #1E3A8A !important; font-weight: 800 !important; }
     
-    /* Força o Título Principal a ser Laranja */
+    /* Título Principal em Laranja */
     h1 { color: #FF8C00 !important; font-weight: 900 !important; text-align: center; font-size: 2.5rem !important; margin-bottom: 0px !important;}
     
-    /* 3. Estilo dos Inputs (Caixas de texto visíveis) */
+    /* 3. Estilo dos Inputs (Caixas de texto super visíveis) */
     div[data-baseweb="input"] > div, div[data-baseweb="select"] > div, textarea { 
         background-color: #FFFFFF !important;
-        border: 2px solid #A0AEC0 !important; /* Borda cinza visível */
+        border: 2px solid #A0AEC0 !important; 
         border-radius: 12px !important; 
-        color: #1A1A1A !important; /* Texto interno sempre preto */
     }
     div[data-baseweb="input"] input, div[data-baseweb="select"] div, textarea { 
-        color: #1A1A1A !important; font-weight: 600 !important; 
+        color: #1A1A1A !important; font-weight: 700 !important; 
     }
     div[data-baseweb="input"] > div:focus-within, textarea:focus { border-color: #FF8C00 !important; }
     
@@ -58,7 +53,7 @@ st.markdown("""
     [data-testid="stForm"] { 
         background-color: #FFFFFF !important;
         border-radius: 20px !important;
-        padding: 20px !important;
+        padding: 25px !important;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
         border: none !important;
     }
@@ -72,7 +67,6 @@ st.markdown("""
         width: 100% !important;
         box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3) !important;
     }
-    /* Protege o texto do botão para continuar branco */
     [data-testid="stFormSubmitButton"] > button p { 
         color: #FFFFFF !important; 
         font-weight: 800 !important; 
@@ -80,76 +74,51 @@ st.markdown("""
         text-transform: uppercase !important; 
     }
 
-    /* ========================================================
-       A MÁGICA: TRANSFORMAR ABAS EM BARRA INFERIOR CLICÁVEL
-       ======================================================== */
-    /* Move o container das abas para o rodapé */
-    div[data-testid="stTabs"] > div:first-child {
-        position: fixed !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        width: 100vw !important;
-        background-color: #FFFFFF !important;
-        z-index: 99999 !important;
-        box-shadow: 0 -4px 20px rgba(0,0,0,0.1) !important;
-        padding: 10px 0px 15px 0px !important;
-        display: flex !important;
-        justify-content: space-around !important;
-        border-radius: 25px 25px 0 0 !important;
+    /* 4. ESTILO DA NAVEGAÇÃO NO TOPO (Menu App Moderno) */
+    [data-testid="stTabs"] { padding-top: 15px; }
+    button[data-baseweb="tab"] p { 
+        font-weight: 700 !important; 
+        font-size: 1rem !important; 
+        color: #64748B !important; /* Cinza para itens inativos */
     }
-    /* Esconde as linhas cinzas chatas do Streamlit */
-    div[data-baseweb="tab-border"] { display: none !important; }
-    div[data-baseweb="tab-highlight"] { display: none !important; }
-    
-    /* Estilo dos botões da aba (Ícones) */
-    button[data-baseweb="tab"] {
-        flex: 1 !important;
-        justify-content: center !important;
-        background: transparent !important;
-        border: none !important;
+    button[data-baseweb="tab"][aria-selected="true"] p { 
+        color: #FF8C00 !important; /* Laranja vibrante para o item ativo */
     }
-    button[data-baseweb="tab"] p {
-        color: #A0AEC0 !important; /* Cor inativa */
-        font-weight: 700 !important;
-        font-size: 0.9rem !important;
-    }
-    /* Cor da Aba Ativa na Barra Inferior */
-    button[data-baseweb="tab"][aria-selected="true"] p {
-        color: #FF8C00 !important; 
+    button[data-baseweb="tab"][aria-selected="true"] { 
+        border-bottom-color: #FF8C00 !important; 
+        border-bottom-width: 3px !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # 3. Cabeçalho 
 st.markdown("<h1>🧩 ATIPICONNECT</h1>", unsafe_allow_html=True)
-st.markdown("<h3 style='text-align: center;'>Acolhimento & Desenvolvimento</h3>", unsafe_allow_html=True)
-st.write("")
+st.markdown("<h3 style='text-align: center; margin-top: 0;'>Acolhimento & Desenvolvimento</h3>", unsafe_allow_html=True)
 
-# 4. As Abas Nativas (Agora fixadas no rodapé pelo CSS)
+# 4. As Abas Nativas (No topo, estruturalmente corretas)
 tab1, tab2, tab3, tab4 = st.tabs(["🏠 Início", "📋 Cadastro", "👨‍⚕️ Médicos", "🧸 Histórias"])
 
 with tab1:
     st.markdown("""
-        <div style="background-color: #FFFFFF; border-radius: 20px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px; border-left: 5px solid #FF8C00;">
+        <div style="background-color: #FFFFFF; border-radius: 20px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px; border-left: 5px solid #FF8C00; margin-top: 10px;">
             <img src="https://img.freepik.com/premium-photo/confident-middle-aged-business-woman-attorney-45-years-old-lady-entrepreneur-mature-female-professional-executive-manager-leader-standing-modern-company-office-looking-camera-portrait_1254992-255711.jpg" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid #1E3A8A; flex-shrink: 0;">
             <div>
                 <h4 style="margin: 0 0 5px 0;">Olá, sou a Ana Paula! 👩🏻‍💼</h4>
-                <p style="margin: 0; font-size: 0.9rem; line-height: 1.4;">Seja bem-vinda ao nosso app. Selecione "Cadastro" na barra inferior para preencher o perfil da criança.</p>
+                <p style="margin: 0; font-size: 0.95rem; line-height: 1.4;">Seja bem-vinda ao nosso app. Selecione "Cadastro" no menu acima para preencher o perfil da criança.</p>
             </div>
         </div>
     """, unsafe_allow_html=True)
 
 with tab2:
-    st.markdown("#### 📋 Formulário da Família", unsafe_allow_html=True)
     with st.form("cadastro_familia", clear_on_submit=True):
-        st.markdown("<p style='font-size: 1.1rem; font-weight: 800; color: #1E3A8A !important;'>👤 Responsável</p>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 1.15rem; font-weight: 800; color: #1E3A8A !important;'>👤 Dados do Responsável</p>", unsafe_allow_html=True)
         nome_resp = st.text_input("Nome Completo", placeholder="Ex: Maria Silva")
         email_resp = st.text_input("E-mail")
         telefone = st.text_input("WhatsApp")
         cidade = st.text_input("Cidade / Estado", placeholder="Ex: Campo Grande, MS")
         
         st.write("---")
-        st.markdown("<p style='font-size: 1.1rem; font-weight: 800; color: #1E3A8A !important;'>🧸 Perfil da Criança</p>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 1.15rem; font-weight: 800; color: #1E3A8A !important;'>🧸 Perfil da Criança</p>", unsafe_allow_html=True)
         nome_crianca = st.text_input("Nome da Criança")
         diagnostico = st.text_area("Breve relato sobre o diagnóstico")
         necessidade = st.selectbox("Especialidade principal procurada", ["Neuropediatria", "Psiquiatria Infantil", "Fonoaudiologia", "Fisioterapia", "Terapia Ocupacional", "Psicologia"])
@@ -165,14 +134,12 @@ with tab3:
     ]
     for m in medicos:
         st.markdown(f"""
-            <div style="background-color: #FFFFFF; border-radius: 15px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border: 1px solid #A0AEC0;">
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <img src="{m['img']}" style="width: 55px; height: 55px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
-                    <div>
-                        <div style="font-weight: 800; font-size: 1.05rem;">{m['nome']}</div>
-                        <div style="color: #FF8C00 !important; font-weight: 700; font-size: 0.85rem;">{m['esp']}</div>
-                        <div style="color: #A0AEC0 !important; font-weight: 600; font-size: 0.75rem;">{m['crm']}</div>
-                    </div>
+            <div style="background-color: #FFFFFF; border-radius: 15px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px; margin-bottom: 12px; border: 1px solid #A0AEC0;">
+                <img src="{m['img']}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+                <div>
+                    <div style="font-weight: 800; font-size: 1.05rem; color: #1A1A1A !important;">{m['nome']}</div>
+                    <div style="color: #FF8C00 !important; font-weight: 700; font-size: 0.9rem;">{m['esp']}</div>
+                    <div style="color: #64748B !important; font-weight: 600; font-size: 0.8rem;">{m['crm']}</div>
                 </div>
             </div>
         """, unsafe_allow_html=True)
@@ -194,14 +161,14 @@ with tab4:
     for h in historias:
         st.markdown(f"""
             <div style="background-color: #FFFFFF; border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 15px; border: 1px solid #A0AEC0;">
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
-                    <img src="{h['img']}" style="width: 55px; height: 55px; border-radius: 50%; object-fit: cover;">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                    <img src="{h['img']}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
                     <div>
-                        <div style="font-weight: 800; font-size: 1.1rem; color: #1E3A8A !important;">{h['nome']} 🧸</div>
-                        <div style="background: #EAF4FB; color: #1E3A8A !important; font-size: 0.75rem; padding: 4px 10px; border-radius: 8px; display: inline-block; font-weight: 700;">{h['diag']}</div>
+                        <div style="font-weight: 800; font-size: 1.15rem; color: #1E3A8A !important;">{h['nome']} 🧸</div>
+                        <div style="background: #EAF4FB; color: #1E3A8A !important; font-size: 0.8rem; padding: 4px 10px; border-radius: 8px; display: inline-block; font-weight: 700; margin-top: 5px;">{h['diag']}</div>
                     </div>
                 </div>
-                <p style="font-size: 0.95rem; line-height: 1.5; margin: 0; font-style: italic;">"{h['texto']}"</p>
+                <p style="font-size: 0.95rem; line-height: 1.5; margin: 0; font-style: italic; color: #1A1A1A !important;">"{h['texto']}"</p>
             </div>
         """, unsafe_allow_html=True)
 
