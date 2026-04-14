@@ -19,18 +19,21 @@ try:
 except Exception as e:
     st.error(f"Erro na conexão com a planilha: {e}")
 
-# 2. UI/UX DESIGN (ESTRUTURA MANTIDA + CORREÇÕES DE MENU E EXPANSÃO)
+# 2. UI/UX DESIGN (MOBILE APP + MENU DROPDOWN BLINDADO)
 st.set_page_config(page_title="ATIPICONNECT", page_icon="🧩", layout="centered")
 
 st.markdown("""
     <style>
+    /* Fundo Azul Claro Fixo e Espaço para o Rodapé */
     [data-testid="stAppViewContainer"] { background-color: #EAF4FB !important; }
     .block-container { padding-bottom: 120px !important; }
     
+    /* Cores de Texto Blindadas */
     p, span, label, div, [data-testid="stWidgetLabel"] p, .stMarkdown p { color: #1A1A1A !important; }
     h3, h4, h5, h6 { color: #1E3A8A !important; font-weight: 800 !important; }
     h1 { color: #FF8C00 !important; font-weight: 900 !important; text-align: center; font-size: 2.2rem !important; margin-bottom: 0px !important;}
     
+    /* Inputs Gerais */
     div[data-baseweb="input"] > div, div[data-baseweb="select"] > div, textarea { 
         background-color: #FFFFFF !important;
         border: 2px solid #A0AEC0 !important; 
@@ -42,39 +45,37 @@ st.markdown("""
     div[data-baseweb="input"] > div:focus-within, textarea:focus { border-color: #FF8C00 !important; }
     
     /* ========================================================
-       CORREÇÃO DO MENU DROP-DOWN (A CAIXINHA DE SELEÇÃO)
+       BLINDAGEM NÍVEL MÁXIMO PARA A CAIXA DE SELEÇÃO (DROPDOWN)
        ======================================================== */
-    div[data-baseweb="popover"] > div { background-color: #FFFFFF !important; }
-    ul[role="listbox"] { background-color: #FFFFFF !important; }
-    ul[role="listbox"] li { color: #1A1A1A !important; font-weight: 700 !important; }
-    ul[role="listbox"] li:hover { background-color: #EAF4FB !important; color: #FF8C00 !important; }
+    /* Força o fundo da lista suspensa a ser branco e os textos pretos */
+    [data-baseweb="popover"] > div, [data-baseweb="menu"], ul[role="listbox"] { 
+        background-color: #FFFFFF !important; 
+        border: 1px solid #CBD5E1 !important;
+    }
+    li[role="option"] { 
+        background-color: #FFFFFF !important; 
+        color: #1A1A1A !important; 
+        font-weight: 700 !important; 
+    }
+    li[role="option"]:hover, li[role="option"][aria-selected="true"] { 
+        background-color: #EAF4FB !important; 
+        color: #FF8C00 !important; 
+    }
     
-    /* ========================================================
-       ESTILOS PARA A CAIXA EXPANSÍVEL (DETAILS/SUMMARY HTML)
-       ======================================================== */
+    /* Card Branco do Formulário e Botão */
+    [data-testid="stForm"] { 
+        background-color: #FFFFFF !important; border-radius: 20px !important; padding: 20px !important; border: 2px solid #CBD5E1 !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+    }
+    [data-testid="stFormSubmitButton"] > button { 
+        background: linear-gradient(135deg, #FF8C00, #FF6B00) !important; border-radius: 20px !important; border: none !important; padding: 12px 20px !important; width: 100% !important; box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3) !important;
+    }
+    [data-testid="stFormSubmitButton"] > button p { color: #FFFFFF !important; font-weight: 800 !important; font-size: 1.1rem !important; text-transform: uppercase !important; }
+
+    /* Efeito Expansível (Details/Summary) limpo */
     summary { list-style: none; outline: none; cursor: pointer; }
     summary::-webkit-details-marker { display: none; }
-    
-    [data-testid="stForm"] { 
-        background-color: #FFFFFF !important;
-        border-radius: 20px !important;
-        padding: 20px !important;
-        border: 2px solid #CBD5E1 !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
-    }
-    
-    [data-testid="stFormSubmitButton"] > button { 
-        background: linear-gradient(135deg, #FF8C00, #FF6B00) !important;
-        border-radius: 20px !important;
-        border: none !important;
-        padding: 12px 20px !important;
-        width: 100% !important;
-        box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3) !important;
-    }
-    [data-testid="stFormSubmitButton"] > button p { 
-        color: #FFFFFF !important; font-weight: 800 !important; font-size: 1.1rem !important; text-transform: uppercase !important; 
-    }
 
+    /* Barra de Navegação Inferior */
     div[role="tablist"] {
         position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important;
         background-color: #FFFFFF !important; z-index: 999999 !important; box-shadow: 0 -4px 20px rgba(0,0,0,0.15) !important;
@@ -123,7 +124,7 @@ with tab2:
         submit_button = st.form_submit_button("CRIAR PERFIL AGORA")
 
 with tab3:
-    st.markdown("#### Corpo Clínico (Clique para expandir)", unsafe_allow_html=True)
+    st.markdown("#### Corpo Clínico", unsafe_allow_html=True)
     medicos = [
         {"nome": "Dr. Carlos Mendes", "esp": "Neuropediatra", "crm": "CRM 45892", "img": "https://images.pexels.com/photos/5327656/pexels-photo-5327656.jpeg?auto=compress&cs=tinysrgb&w=200", "bio": "Especialista no diagnóstico e acompanhamento de TEA e TDAH. Atendimento focado no desenvolvimento neuropsicomotor com abordagem humanizada."},
         {"nome": "Dra. Juliana Castro", "esp": "Psiquiatra Infantil", "crm": "CRM 67123", "img": "https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg?auto=compress&cs=tinysrgb&w=200", "bio": "Ampla experiência em transtornos do neurodesenvolvimento. Trabalha em parceria com a família para encontrar o equilíbrio emocional da criança."},
@@ -147,24 +148,32 @@ with tab3:
                 </summary>
                 <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #E2E8F0; color: #333333; font-size: 0.9rem; line-height: 1.5;">
                     <b>Sobre o profissional:</b> {m['bio']}
-                    <br><br>
-                    <button style="background: #EAF4FB; color: #1E3A8A; border: none; padding: 8px 15px; border-radius: 8px; font-weight: 700; width: 100%;">Solicitar Contato</button>
                 </div>
             </details>
         """, unsafe_allow_html=True)
 
 with tab4:
-    st.markdown("#### Histórias de Superação (Clique)", unsafe_allow_html=True)
+    st.markdown("#### Histórias de Superação", unsafe_allow_html=True)
     historias = [
         {
-            "nome": "Leo, 5 anos", "diag": "Autismo (TEA)", "resumo": "As primeiras palavras do Leo mudaram tudo...",
-            "texto": "Após 6 meses de acompanhamento com a equipe multidisciplinar de fonoaudiologia e terapia ocupacional, o Leo começou a pronunciar as primeiras palavras e interagir com os coleguinhas na escola. Hoje ele já consegue pedir seus brinquedos favoritos. Uma vitória de toda a família e da nossa rede de apoio!", 
-            "img": "https://arttherapyresources.com.au/wp-content/uploads/autism-children-art-therapy-1.jpg"
+            "nome": "Leo, 5 anos", "diag": "Autismo (TEA)", "resumo": "As primeiras palavras do Leo...",
+            "texto": "Após 6 meses de acompanhamento com a equipe multidisciplinar de fonoaudiologia e terapia ocupacional, o Leo começou a pronunciar as primeiras palavras e interagir com os coleguinhas na escola. Hoje ele já consegue pedir seus brinquedos favoritos. Uma vitória de toda a família!", 
+            "img": "https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=200"
         },
         {
-            "nome": "Sofia, 7 anos", "diag": "TDAH", "resumo": "Uma nova rotina trouxe calma para a Sofia...",
-            "texto": "A rotina estruturada recomendada pela neuropediatra transformou a vida da Sofia e de seus pais. Antes, o momento da lição de casa era de muito choro. Hoje, com estratégias visuais e pausas ativas, ela consegue focar nas atividades e está muito mais feliz e confiante nas aulas.", 
-            "img": "https://media.istockphoto.com/id/2160439676/photo/happy-multiethnic-group-of-children-hugging-together-at-park.jpg?s=612x612&w=0&k=20&c=1lqhI9FvBhrHWTeycmeKB_Z36-OQJRcucLodsnKajR4="
+            "nome": "Sofia, 7 anos", "diag": "TDAH", "resumo": "Uma nova rotina trouxe calma...",
+            "texto": "A rotina estruturada recomendada pela neuropediatra transformou a vida da Sofia. Antes, o momento da lição de casa era de muito choro. Hoje, com estratégias visuais e pausas ativas, ela consegue focar nas atividades e está muito mais feliz.", 
+            "img": "https://images.pexels.com/photos/1620760/pexels-photo-1620760.jpeg?auto=compress&cs=tinysrgb&w=200"
+        },
+        {
+            "nome": "Pedro, 4 anos", "diag": "Síndrome de Down", "resumo": "A independência nas pequenas coisas...",
+            "texto": "Com o apoio da terapia ocupacional, Pedro aprendeu a segurar os talheres e a se alimentar sozinho. Ver a alegria e a independência dele a cada nova conquista nos dá a certeza de que estamos no caminho certo.",
+            "img": "https://images.pexels.com/photos/8055998/pexels-photo-8055998.jpeg?auto=compress&cs=tinysrgb&w=200" 
+        },
+        {
+            "nome": "Clara, 6 anos", "diag": "Apraxia de Fala", "resumo": "A primeira frase completa...",
+            "texto": "Foram meses de exercícios fonoaudiológicos e muita paciência em casa. Na semana passada, Clara conseguiu formular sua primeira frase completa pedindo para brincar no parque. Foi um momento inesquecível!",
+            "img": "https://images.pexels.com/photos/5063462/pexels-photo-5063462.jpeg?auto=compress&cs=tinysrgb&w=200"
         }
     ]
     for h in historias:
