@@ -19,12 +19,12 @@ try:
 except Exception as e:
     st.error(f"Erro na conexão com a planilha: {e}")
 
-# 2. UI/UX DESIGN (Estilo Mobile App)
+# 2. UI/UX DESIGN (Estilo Mobile App - Alto Contraste)
 st.set_page_config(page_title="ATIPICONNECT", page_icon="🧩", layout="centered")
 
 st.markdown("""
     <style>
-    /* Fundo Azul Clarinho (Estilo App) */
+    /* Fundo Azul Clarinho */
     [data-testid="stAppViewContainer"] { background-color: #EAF4FB !important; }
     
     /* Reset de textos nativos */
@@ -43,7 +43,7 @@ st.markdown("""
     [data-testid="stFormSubmitButton"] > button { background: linear-gradient(135deg, #FF8C00, #FF6B00) !important; color: #FFFFFF !important; border-radius: 30px !important; border: none !important; font-weight: 800 !important; font-size: 1.1rem !important; padding: 12px 20px !important; width: 100% !important; margin-top: 15px !important; box-shadow: 0 6px 16px rgba(255, 140, 0, 0.25) !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; transition: all 0.2s ease !important; }
     [data-testid="stFormSubmitButton"] > button:active { transform: scale(0.98) !important; }
     
-    /* Estilo das Abas (Simulando Menu Superior de App) */
+    /* Estilo das Abas (Menu Superior) */
     [data-testid="stTabs"] button { font-weight: 700 !important; color: #88A5BC !important; font-size: 0.95rem !important; padding-bottom: 10px !important;}
     [data-testid="stTabs"] button[aria-selected="true"] { color: #4682B4 !important; border-bottom: 3px solid #FF8C00 !important; }
     </style>
@@ -58,7 +58,6 @@ st.write("")
 tab1, tab2, tab3, tab4 = st.tabs(["🏠 Início", "📋 Cadastro", "👨‍⚕️ Médicos", "🧸 Histórias"])
 
 with tab1:
-    # Boas-vindas
     st.markdown("""
         <div style="background-color: #FFFFFF; border-radius: 20px; padding: 20px; box-shadow: 0 6px 16px rgba(0,0,0,0.04); display: flex; align-items: center; gap: 15px; margin-bottom: 15px; border-left: 5px solid #FF8C00;">
             <img src="https://i.pravatar.cc/150?img=47" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid #FF8C00; flex-shrink: 0;">
@@ -68,8 +67,7 @@ with tab1:
             </div>
         </div>
     """, unsafe_allow_html=True)
-    
-    st.info("💡 **Dica Rápida:** Vá na aba **Cadastro** para preencher o perfil da criança e começarmos o acompanhamento.")
+    st.info("💡 **Dica Rápida:** Vá na aba **Cadastro** para preencher o perfil da criança.")
 
 with tab2:
     with st.form("cadastro_familia", clear_on_submit=True):
@@ -92,6 +90,7 @@ with tab2:
 with tab3:
     st.markdown("<h4 style='color: #333333; font-weight: 800; margin-bottom: 15px;'>Corpo Clínico</h4>", unsafe_allow_html=True)
     
+    # Lista de médicos com fotos reais e sem quebrar
     medicos = [
         {"nome": "Dr. Carlos Mendes", "esp": "Neuropediatra", "crm": "CRM 45892", "img": "https://i.pravatar.cc/150?img=11"},
         {"nome": "Dra. Juliana Castro", "esp": "Psiquiatra Infantil", "crm": "CRM 67123", "img": "https://i.pravatar.cc/150?img=32"},
@@ -116,20 +115,21 @@ with tab3:
         """, unsafe_allow_html=True)
 
 with tab4:
-    st.markdown("<h4 style='color: #333333; font-weight: 800; margin-bottom: 15px;'>Inpirações Reais</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='color: #333333; font-weight: 800; margin-bottom: 15px;'>Inspirações Reais</h4>", unsafe_allow_html=True)
     
+    # Histórias com avatares de crianças (Estilo "Micah")
     historias = [
         {
             "nome": "Leo, 5 anos", 
             "diag": "Autismo (TEA)", 
             "texto": "Após 6 meses de acompanhamento com a equipe multidisciplinar, o Leo começou a pronunciar as primeiras palavras e interagir com os coleguinhas na escola. Uma vitória de toda a família!", 
-            "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=Leo&backgroundColor=b6e3f4"
+            "img": "https://api.dicebear.com/8.x/micah/svg?seed=Felix&backgroundColor=b6e3f4" 
         },
         {
             "nome": "Sofia, 7 anos", 
             "diag": "TDAH", 
             "texto": "A rotina estruturada recomendada pela neuropediatra transformou a vida da Sofia. Hoje ela consegue focar nas atividades e está muito mais feliz e confiante nas aulas.", 
-            "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=Sofia&backgroundColor=ffdfbf"
+            "img": "https://api.dicebear.com/8.x/micah/svg?seed=Jasmine&backgroundColor=ffdfbf"
         }
     ]
     
@@ -137,7 +137,7 @@ with tab4:
         st.markdown(f"""
             <div style="background-color: #FFFFFF; border-radius: 20px; padding: 20px; box-shadow: 0 6px 16px rgba(0,0,0,0.04); margin-bottom: 15px;">
                 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
-                    <img src="{h['img']}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #F5F5F5;">
+                    <img src="{h['img']}" style="width: 50px; height: 50px; border-radius: 50%; background-color: #F5F5F5; border: 2px solid #E0E0E0;">
                     <div>
                         <div style="color: #FF8C00; font-weight: 800; font-size: 1.1rem;">{h['nome']}</div>
                         <div style="background: #F0F0F0; color: #666; font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; display: inline-block; font-weight: 600;">{h['diag']}</div>
